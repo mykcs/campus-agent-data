@@ -21,5 +21,12 @@ for url in TARGETS:
             soup=BeautifulSoup(raw,"html.parser")
             entries=[(a.get_text(" ",strip=True) or a.get("title",""),a.get("href","")) for a in soup.select("a[href]") if re.search(r"/\d{4}/\d{4}/c\d+a\d+/(?:page|pagem)\.htm",a.get("href",""))]
             print("OK",url,"status",resp.status,"final",resp.url,"bytes",len(raw),"title",str(soup.title.get_text(" ",strip=True) if soup.title else "")[:80],"articles",len(entries),"samples",[(s[:55],u[:110]) for s,u in entries[:3]],flush=True)
+            if "s2.zju.edu.cn" in url:
+                a = next((a for a in soup.select("a[href]") if re.search(r"/\\d{4}/\\d{4}/c\\d+a\\d+/", a.get("href",""))),None)
+                if a:
+                    p = a
+                    for i in range(3):
+                        p = p.parent
+                        print("PARENT",i+1,p.name,p.get("class"),repr(p.get_text(" ",strip=True)[:250]),flush=True)
     except Exception as exc:
         print("FAIL",url,type(exc).__name__,str(exc)[:120],flush=True)
