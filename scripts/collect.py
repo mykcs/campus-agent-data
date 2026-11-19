@@ -27,6 +27,7 @@ CHINESE_DATE = re.compile(
 )
 DEADLINE_HINT = re.compile(r"报名|截止|递交|提交|寄出|邮寄|材料|申请|上传|网报|考核")
 ATTACHMENT = re.compile(r"\.(pdf|docx?|xlsx?|pptx?|zip)(?:$|[?#])", re.I)
+PERSONAL_LIST_HINT = re.compile(r"名单|公示|拟录取|入围|考核结果|导师资格目录")
 HEADERS = {
     "User-Agent": "CampusAgentPublicNotices/0.1 (+https://github.com/mykcs/campus-agent-data)",
     "Accept": "text/html,application/xhtml+xml",
@@ -117,9 +118,13 @@ def article_data(html: str, url: str) -> dict:
             "title": (anchor.get_text(" ", strip=True) or parsed.path.split("/")[-1])[:100],
             "url": link,
         })
+    # Store a small subject-relevant extract, not a full copy of university content.
+    sentences = re.split(r"(?<=[。；;！？])\s*", full_text)
+    relevant = [s for s in sentences if DEADLINE_HINT.search(s) or re.search(r"报考|招生|选拔|资格|学位|学制", s)]
+    digest = " ".join(relevant)[:2200] if relevant else full_text[:1200]
     return {
-        "excerpt": full_text[:420],
-        "content": full_text[:14000],
+        "excerpt": digest[:420],
+        "content": digest,
         "content_sha256": hashlib.sha256(full_text.encode()).hexdigest(),
         "attachments": files[:25],
         "date_candidates": extract_dates(full_text),
@@ -154,20 +159,27 @@ def collect(previous: dict | None = None, delay: float = 0.6) -> dict:
     }
     notices = []
     for item in entries[:30]:
-        try:
-            details = article_data(fetch_html(item["url"]), item["url"])
-            item.update(details)
-        except Exception as exc:
-            if item["id"] in previous_items:
-                details = {
-                    k: previous_items[item["id"]].get(k)
-                    for k in ("excerpt", "content", "content_sha256", "attachments", "date_candidates")
-                }
+        if PERSONAL_LIST_HINT.search(item["title"]):
+            item.update({
+                "excerpt": "人员名单或公示仅保留官方标题和链接，不镜像正文。",
+                "content": "", "content_sha256": None,
+                "attachments": [], "date_candidates": [], "personal_list": True,
+            })
+        else:
+            try:
+                details = article_data(fetch_html(item["url"]), item["url"])
                 item.update(details)
-            else:
-                errors.append(f"Article {item['url']}: {type(exc).__name__}: {exc}")
-                continue
-            errors.append(f"Stale cached article {item['url']}: {type(exc).__name__}: {exc}")
+            except Exception as exc:
+                if item["id"] in previous_items:
+                    details = {
+                        k: previous_items[item["id"]].get(k)
+                        for k in ("excerpt", "content", "content_sha256", "attachments", "date_candidates")
+                    }
+                    item.update(details)
+                else:
+                    errors.append(f"Article {item['url']}: {type(exc).__name__}: {exc}")
+                    continue
+                errors.append(f"Stale cached article {item['url']}: {type(exc).__name__}: {exc}")
         item["school"] = "浙江大学"
         item["department"] = "人工智能学院"
         item["category"] = classify(item["title"])
