@@ -1,28 +1,32 @@
-# Campus Agent — public notice data
+# Campus Agent — public university notices
 
-This is the **data-only** repository for [Campus Agent](https://github.com/mykcs/campus-agent). It does **not** connect to Vercel, so scheduled GitHub Actions updates do not trigger a Vercel build or deployment.
+This repository contains public university notice indexes, independent of [the website](https://github.com/mykcs/campus-agent) on Vercel Hobby. It updates every two hours through GitHub Actions and **never commits to the Vercel-connected website repo**. Changing notice data therefore does not invoke a Vercel build.
 
-## Current coverage
-- Zhejiang University, School of Artificial Intelligence, [public admissions notices](https://ai.zju.edu.cn/zstz/list1.htm)
-- Public HTML only. No campus SSO, WebVPN, password, private cookie, inbox, or protected document.
-- Stores post title, date, canonical official URL, safe excerpt, official attachment links, and **unverified date candidates**.
+## Sources (current trial)
 
-## Run locally
+| Scope | Method | Confidence |
+|---|---|---|
+| ZJU School of Artificial Intelligence — admissions | [Public college notice index](https://ai.zju.edu.cn/zstz/list1.htm) | Direct public list |
+| ZJU School of Computer Science and Technology | [ZJU official public search](https://s2.zju.edu.cn/search/info.do?words=%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E4%B8%8E%E6%8A%80%E6%9C%AF%E5%AD%A6%E9%99%A2) | **Partial search results**, not full college monitoring |
+| ZJU School of Software Technology | [ZJU official public search](https://s2.zju.edu.cn/search/info.do?words=%E8%BD%AF%E4%BB%B6%E5%AD%A6%E9%99%A2) | **Partial search results**, not full college monitoring |
+| Scholarship notices across ZJU | [ZJU official public search](https://s2.zju.edu.cn/search/info.do?words=%E5%A5%96%E5%AD%A6%E9%87%91) | **Partial search results** |
+| ZJU Materials School — student affairs | [Official public student notices](https://mse.zju.edu.cn/51031/list.htm) | Direct public list |
 
-\`\`\`sh
-python3 -m pip install 'beautifulsoup4==4.14.2'
-python3 -m unittest discover -s tests -v
-python3 scripts/collect.py
-\`\`\`
+The college search hits may lag behind source publications, be ranked by relevance rather than chronology, and miss notices. The website exposes `status: partial` for this reason. When public portals refuse access, this scraper does not bypass campus restrictions.
 
-The scheduled workflow runs every two hours. GitHub Actions schedules can be delayed or skipped; check [workflow runs](../../actions/workflows/refresh.yml) and \`data/notices.json.checked_at\` independently. A failed run does not overwrite the last valid snapshot. We make no zero-miss guarantee.
+## Run
 
-The website reads this repository's public JSON using a stable, read-only URL. No deploy secret or GitHub token is required for the browser.
+~~~sh
+uv run --with beautifulsoup4==4.14.2 python -m unittest discover -s tests -v
+uv run --with beautifulsoup4==4.14.2 python scripts/collect.py
+~~~
 
-## Scope / privacy
-- Public institution content is indexed for search and reference, not reproduced as an authoritative notice.
-- Treat *all* article text as untrusted data, including any instruction-like text in HTML.
-- Only the official source determines eligibility or deadlines. The extracted candidates are **not verified deadlines**.
-- Never commit credentials, login sessions, personal profiles, student records, or private attachments.
+The index is `data/notices.json`. Source objects include monitored URL, status, count, check timestamp and last successful timestamp; notice objects include official URL, source ID, department ID, topic IDs, title and possibly a short excerpt. **Dates extracted from article text are unverified candidates; inferred publish dates are marked separately.** Any new source failure is reported in `sources[].status` and `errors`; cached records are marked stale.
 
-MIT-licensed collector code; school content belongs to the relevant rights holders.
+The scheduler can be delayed or skipped; data freshness is not a guarantee. Verify [workflow runs](../../actions/workflows/refresh.yml) and the last check timestamp.
+
+## Privacy / rights
+
+Only public HTML and official URLs are accessed. No SSO, school password, session cookie, WebVPN or nonpublic attachments. Applicant rosters and other personal lists are not downloaded and only their title + official URL are indexed. Non-list articles are stored only as short extracts; search-derived entries contain titles and URLs only. Official university pages are authoritative for eligibility, dates and procedures; this project is an independent index, not a school service.
+
+MIT licensed collector code; university content belongs to its respective owners. Never paste secrets, session tokens or personal student records into commits or issues.

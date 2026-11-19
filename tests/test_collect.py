@@ -36,7 +36,8 @@ class ParserTests(unittest.TestCase):
             if '3216867' in url:
                 raise AssertionError('Must not fetch personal roster')
             return article
-        with patch('scripts.collect.fetch_html', side_effect=fetch):
+        with patch('scripts.collect.fetch_html', side_effect=fetch), \
+                patch('scripts.collect.collect_additional', return_value=([], [], [])):
             snapshot = collect(delay=0)
         records = {item['title']:item for item in snapshot['notices']}
         roster = records['2027博士入围名单']
