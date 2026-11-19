@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "checked_at": "2026-11-19T14:22:37Z",
+  "checked_at": "2026-11-19T14:37:45Z",
   "timezone": "Asia/Shanghai",
   "sources": [
     {
       "id": "zju-ai-admissions",
       "name": "浙江大学人工智能学院 · 招生通知",
       "url": "https://ai.zju.edu.cn/zstz/list1.htm",
-      "last_checked_at": "2026-11-19T14:22:37Z",
+      "last_checked_at": "2026-11-19T14:37:45Z",
       "status": "ok",
       "count": 15
     }
