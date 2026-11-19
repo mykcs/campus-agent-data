@@ -15,6 +15,11 @@ from urllib.request import Request, urlopen
 
 from bs4 import BeautifulSoup
 
+if __package__:
+    from .additional_sources import collect_additional, topics
+else:
+    from additional_sources import collect_additional, topics
+
 SOURCE_ID = "zju-ai-admissions"
 BASE = "https://ai.zju.edu.cn"
 SOURCE_URL = f"{BASE}/zstz/list1.htm"
@@ -182,16 +187,26 @@ def collect(previous: dict | None = None, delay: float = 0.6) -> dict:
                 errors.append(f"Stale cached article {item['url']}: {type(exc).__name__}: {exc}")
         item["school"] = "浙江大学"
         item["department"] = "人工智能学院"
+        item["department_id"] = "zju-ai"
         item["category"] = classify(item["title"])
+        item["topics"] = topics(item["title"])
         item["source_id"] = SOURCE_ID
         notices.append(item)
         time.sleep(delay)
     if len(notices) < 3:
         raise RuntimeError(f"Only {len(notices)} readable articles; refuse to overwrite")
-    notices.sort(key=lambda x: x.get("published_at") or "", reverse=True)
+    additional, extra_sources, extra_errors = collect_additional(previous)
+    by_id = {x["id"]: x for x in notices}
+    for item in additional:
+        old = by_id.get(item["id"])
+        if old is None or (old.get("department_id") == "zju-other" and item.get("department_id") != "zju-other"):
+            by_id[item["id"]] = item
+    notices = sorted(by_id.values(), key=lambda x: x.get("published_at") or "", reverse=True)
+    ai_errors = list(errors)
+    errors.extend(extra_errors)
     checked_at = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
     return {
-        "version": 1,
+        "version": 2,
         "checked_at": checked_at,
         "timezone": "Asia/Shanghai",
         "sources": [{
@@ -199,13 +214,14 @@ def collect(previous: dict | None = None, delay: float = 0.6) -> dict:
             "name": "浙江大学人工智能学院 · 招生通知",
             "url": SOURCE_URL,
             "last_checked_at": checked_at,
-            "status": "degraded" if errors else "ok",
-            "count": len(notices),
-        }],
+            "status": "degraded" if ai_errors else "ok",
+            "count": sum(x.get("source_id")==SOURCE_ID for x in notices),
+            "last_success_at": checked_at if not ai_errors else next((s.get("last_success_at") for s in (previous or {}).get("sources",[]) if s.get("id")==SOURCE_ID),None),
+        }] + extra_sources,
         "notices": notices,
         "errors": errors[:20],
         "limitations": [
-            "仅覆盖浙江大学人工智能学院公开招生通知栏目，不能证明全校通知完整。",
+            "人工智能学院有直接公开通知流，计算机学院、软件学院与校级奖学金仅为校级关键词搜索的部分结果；不能宣称完整覆盖。",
             "日期为规则抽取候选，需结合官方原文核对适用报名类别。",
             "无须登录的公开网页可能改版、暂时不可用或撤稿。",
         ],
@@ -232,7 +248,8 @@ def main() -> int:
         "status": snapshot["sources"][0]["status"],
         "errors": snapshot["errors"][:2],
     }, ensure_ascii=False))
-    return 0 if not snapshot["errors"] else 2
+    # Partial-source failures stay visible in the snapshot without hiding healthy sources.
+    return 0 if len(snapshot["notices"]) >= 3 else 2
 
 if __name__ == "__main__":
     sys.exit(main())
