@@ -26,9 +26,9 @@
 3. 对相同公告跨不同列表去重，保留官方原文与来源集；给 UI 所需字段稳定 JSON schema。
 
 ## 验收（DoD）
-- [x] 匿名 HTTP 200 + HTML 解析已实测历史学院资助14条、工程师学院奖助6条；还有合成 fixture 与 URL 校验。**独立 GitHub-hosted 再验待完成。**
+- [x] 匿名 HTTP 200 + HTML 解析已实测历史学院资助14条、工程师学院奖助6条；还有合成 fixture 与 URL 校验。**独立 [GitHub-hosted 实际采集](https://github.com/mykcs/campus-agent-data/actions/runs/44694729042) 已 PASS。**
 - [x] 与既有快照比较：65 → 85 个唯一条目，21 个新出现、1 个不再出现（校级搜索榜单可轮换）；净增20不等于20篇新发布。完整证据见 `docs/evidence/2026-11-20-zju-student-funding-source-audit.md`。
-- [x] 本地 Python 回归13/13、实际临时数据7来源85条0错误；[ ] GitHub-hosted 同版本实际采集待运行。网站跨学院奖学金主题能消费新数据，但当前来源状态面板仍固定5项，须由网站多校 UI 工作线实现动态渲染。
+- [x] 本地 Python 回归13/13、实际临时数据7来源85条0错误；[x] [GitHub-hosted 同版本实际采集](https://github.com/mykcs/campus-agent-data/actions/runs/44694729042) PASS。网站跨学院奖学金主题能消费新数据，但当前来源状态面板仍固定5项，须由网站多校 UI 工作线实现动态渲染。
 - [x] 新源仅保存学校公布的标题、URL、日期（明确 `date_inferred`）、来源与主题，不抓全文；人员名单不镜像，历史学院相邻条目日期污染回归已修。
 - [x] 两处官网可匿名读取，无 school SSO/WebVPN；README 和审计证据记录只覆盖有限公开栏目。
 
@@ -38,6 +38,6 @@
 ## 证据与进度
 - 规格审查：根据现有 `zju-scholarships-search` 与用户产品愿望整理。
 - 实施：新增两处公开来源与安全解析回归，**尚未合并**；不能宣称全校覆盖。
-- 本地验收：2026-11-20 07:19 UTC，65 → 85 条、7来源、0错误，13/13 测试通过；真实 GitHub-hosted 来源访问仍待验证。
-- 集成验收：GitHub-hosted PR branch workflow **NOT RUN**；当前 Vercel 网站未改动。
+- 本地验收：2026-11-20 07:19 UTC，65 → 85 条、7来源、0错误，13/13 测试通过；真实 GitHub-hosted 7来源访问已 PASS（[run #44694729042](https://github.com/mykcs/campus-agent-data/actions/runs/44694729042)）。
+- 集成验收：GitHub-hosted PR branch [workflow PASS](https://github.com/mykcs/campus-agent-data/actions/runs/44694729042)；生产 main/网站仍未改动，动态来源状态 UI 另属网站 PR。
 - 最近核对：2026-11-20 UTC；head 以 GitHub PR 读回为准。
