@@ -28,8 +28,8 @@
 ## 验收（DoD）
 - [x] 本地 23 项单元测试覆盖成功、partial、故障注入、旧数据保留、全流程中断、重复运行幂等；失败不伪造成功时间。
 - [x] 模拟来源失败、采集总中断与异常骤降；分别落地 degraded/failed 收据、非零退出码及原快照保留。
-- [x] 本地 `uv run --with beautifulsoup4==4.14.2 python -m unittest discover -s tests -v` 23/23 通过；实际只读浙大5个源采集到临时目录65条，状态 healthy/0 errors。**GitHub-hosted PR CI 另行验收。**
-- [ ] GitHub workflow 执行记录、JSON 健康样本、失败复现和修复后读回证据；更新 README 对部分覆盖/cron 丢失的真实边界。
+- [x] 本地 `uv run --with beautifulsoup4==4.14.2 python -m unittest discover -s tests -v` 23/23 通过；实际只读浙大5个源采集到临时目录65条，状态 healthy/0 errors；[GitHub-hosted PR CI](https://github.com/mykcs/campus-agent-data/actions/runs/44692812902) 23/23 PASS。
+- [x] [GitHub-hosted 实际采集](https://github.com/mykcs/campus-agent-data/actions/runs/44693039901) 成功执行全部步骤，65条/5源/0错误；有健康 JSON/限量审计记录与失败注入。详情：`docs/evidence/2026-11-20-health-workflow-receipt.md`。**正式 main 定时/独立 watchdog 尚未验收。**
 - [x] 新健康收据只有来源 ID、时间、状态、计数、固定故障代码，不包含学生名单正文、密钥或 Session；实际代码仍仅读取已配置公开页面。
 
 ## 安全、隐私、资源与恢复
@@ -39,5 +39,5 @@
 - 规格审查：按现有源码、Issue #5 拟定；需要实现者复核最新 head。
 - 实施：本地候选代码已经完成；新 `scripts/source_health.py`、`scripts/check_freshness.py`、新增 PR checks/watchdog Actions 与 refresh fail-after-commit；**尚未合并**。
 - 本地实测：2026-11-20 07:03 UTC，5个来源、65条、health=healthy，23/23 单测通过；1个来源失效时退化路径由合成故障注入证明。
-- 集成验收：GitHub-hosted PR CI **待运行**；正式 schedule / watchdog 在 main 上尚未验收。系统仍受 GitHub 同平台 Cron 停摆风险，尚无外部独立 heartbeat。
+- 集成验收：GitHub PR CI [PASS](https://github.com/mykcs/campus-agent-data/actions/runs/44692812902)，branch-dispatched [refresh PASS](https://github.com/mykcs/campus-agent-data/actions/runs/44693039901)；正式自然 schedule/watchdog 在 main 上尚未验收。GitHub 同平台 Cron 可共同停摆，尚无独立外部 heartbeat。
 - 最近核对：2026-11-20 UTC；当前 PR head 请以 GitHub 读回为准，main 会继续由定时任务更新。
