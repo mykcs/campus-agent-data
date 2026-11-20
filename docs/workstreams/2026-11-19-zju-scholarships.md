@@ -1,6 +1,6 @@
-# 浙大奖助与博士申请相关公开通知覆盖增强 [Task spec only]
+# 浙大奖助与博士申请相关公开通知覆盖增强 [Implementation in progress]
 
-> Status: Draft · TASK SPEC ONLY · Implementation: NOT DONE
+> Status: Draft · IMPLEMENTATION CANDIDATE · GitHub-hosted integration: NOT VERIFIED
 > Workstream: zju-scholarship-coverage · Size: M · Confidence: 中
 
 ## 目标及原因
@@ -26,17 +26,18 @@
 3. 对相同公告跨不同列表去重，保留官方原文与来源集；给 UI 所需字段稳定 JSON schema。
 
 ## 验收（DoD）
-- [ ] 至少两处新检验的公开官方资助栏目有 2 次独立采集/同一版本的固定 fixture，或明确记录实际不可访问的阻碍而不宣称交付。
-- [ ] 比较旧校级搜索前 10 条与新增直连来源的最近公告覆盖，给出有依据的增量/已知漏项；未发现新公告不能仅靠搜索没有结果就判定不存在。
-- [ ] Python 单元和 GitHub-hosted 工作流检查通过，新 JSON 能被现有站点读取并保持 `partial/ok/error` 等准确含义。
-- [ ] 人名公示/人员名单仅标题和官方链接；日期候选不自动称为截止，所有条目带原始 URL。
-- [ ] 无 school SSO/WebVPN，资源与失败说明留在数据仓 README。
+- [x] 匿名 HTTP 200 + HTML 解析已实测历史学院资助14条、工程师学院奖助6条；还有合成 fixture 与 URL 校验。**独立 GitHub-hosted 再验待完成。**
+- [x] 与既有快照比较：65 → 85 个唯一条目，21 个新出现、1 个不再出现（校级搜索榜单可轮换）；净增20不等于20篇新发布。完整证据见 `docs/evidence/2026-11-20-zju-student-funding-source-audit.md`。
+- [x] 本地 Python 回归13/13、实际临时数据7来源85条0错误；[ ] GitHub-hosted 同版本实际采集待运行。网站跨学院奖学金主题能消费新数据，但当前来源状态面板仍固定5项，须由网站多校 UI 工作线实现动态渲染。
+- [x] 新源仅保存学校公布的标题、URL、日期（明确 `date_inferred`）、来源与主题，不抓全文；人员名单不镜像，历史学院相邻条目日期污染回归已修。
+- [x] 两处官网可匿名读取，无 school SSO/WebVPN；README 和审计证据记录只覆盖有限公开栏目。
 
 ## 安全、隐私、资源与恢复
 只抓公开网站，遵循站点规则与合理频率，不更改历史 Git 对象或公开个人申请记录。Github Actions 免费公开仓；不申请第三方 API Key。
 
 ## 证据与进度
 - 规格审查：根据现有 `zju-scholarships-search` 与用户产品愿望整理。
-- 实施：NOT DONE；真覆盖率与来源名单需下一位 Agent 实测。
-- 集成验收：NOT RUN
-- 最近核对：2026-11-19 PT；head 由 GitHub PR 负责。
+- 实施：新增两处公开来源与安全解析回归，**尚未合并**；不能宣称全校覆盖。
+- 本地验收：2026-11-20 07:19 UTC，65 → 85 条、7来源、0错误，13/13 测试通过；真实 GitHub-hosted 来源访问仍待验证。
+- 集成验收：GitHub-hosted PR branch workflow **NOT RUN**；当前 Vercel 网站未改动。
+- 最近核对：2026-11-20 UTC；head 以 GitHub PR 读回为准。
