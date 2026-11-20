@@ -1,0 +1,23 @@
+name: Public notice freshness watchdog
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Independent of refresh workflow, but still uses GitHub scheduling.
+    # This is NOT an external uptime guarantee. Avoid minute zero.
+    - cron: "47 */3 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Read current public notice and health receipt snapshots
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Check last collection and last health receipt
+        run: python scripts/check_freshness.py --max-age-hours 6

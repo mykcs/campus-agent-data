@@ -1,6 +1,6 @@
-# 公开通知采集健康与漏报风险可视化 [Task spec only]
+# 公开通知采集健康与漏报风险可视化 [Implementation in progress]
 
-> Status: Draft · TASK SPEC ONLY · Implementation: NOT DONE
+> Status: Draft · IMPLEMENTATION CANDIDATE · GitHub scheduled integration: NOT VERIFIED
 > Workstream: data-source-health · Size: M · Confidence: 高
 
 ## 目标及原因
@@ -8,7 +8,7 @@
 
 ## 来源与当前事实
 - 来源：[Campus Agent 总索引](https://github.com/mykcs/campus-agent/issues/5)，产品 [Wish](https://github.com/mykcs/campus-agent/blob/main/docs/wish/PRODUCT-WISHES.md)。
-- 已有：`.github/workflows/refresh.yml` 每两小时定时抓取；`scripts/collect.py` 有 `errors`、`checked_at`；`scripts/additional_sources.py` 输出 `ok/partial/error`。当前采集器只要通知数≥3便返回成功，部分来源失败可能让 Actions 仍为绿色。
+- 基线问题（PR 建立前）：`.github/workflows/refresh.yml` 每两小时定时抓取；采集器原先只要通知数≥3便返回成功，部分来源失败可能让 Actions 仍为绿色。**本分支已修改此路径**，但正式 GitHub Actions 调度行为仍待验证。
 - 未证实：GitHub cron 每次都能按时执行；所有来源每次抓取完整。GitHub 官方说明定时任务可能延迟甚至丢失：https://docs.github.com/en/actions/how-tos/troubleshoot-workflows
 
 ## 范围
@@ -26,17 +26,18 @@
 3. 设计独立于同一个可能丢失的 cron 的最小缺跑核验方案，若无免费可靠途径，明确披露无法主动发现“整个 scheduler 未触发”而非承诺修好。
 
 ## 验收（DoD）
-- [ ] 单元测试覆盖成功、partial、HTTP 错误、结构变化、旧数据保留、全流程中断、重复运行幂等；新失败不伪造最新成功时间。
-- [ ] 模拟 1 个来源失败时输出可辨认的 source error 并使指定告警门槛可观察；未坏的来源仍能读到，不覆盖快照为 0 项。
-- [ ] 离线/CI 回归命令 `python -m unittest discover -s tests -v` 与 `python scripts/collect.py --output /tmp/campus-notices-test.json`，只对临时文件运行实际抓取；不人工攻击或故障化学校服务。
+- [x] 本地 23 项单元测试覆盖成功、partial、故障注入、旧数据保留、全流程中断、重复运行幂等；失败不伪造成功时间。
+- [x] 模拟来源失败、采集总中断与异常骤降；分别落地 degraded/failed 收据、非零退出码及原快照保留。
+- [x] 本地 `uv run --with beautifulsoup4==4.14.2 python -m unittest discover -s tests -v` 23/23 通过；实际只读浙大5个源采集到临时目录65条，状态 healthy/0 errors。**GitHub-hosted PR CI 另行验收。**
 - [ ] GitHub workflow 执行记录、JSON 健康样本、失败复现和修复后读回证据；更新 README 对部分覆盖/cron 丢失的真实边界。
-- [ ] 公开数据不包含学生名单正文、私人密钥、登录 Session 或任何非公开页面。
+- [x] 新健康收据只有来源 ID、时间、状态、计数、固定故障代码，不包含学生名单正文、密钥或 Session；实际代码仍仅读取已配置公开页面。
 
 ## 安全、隐私、资源与恢复
 只读访问官方公开来源；不向用户邮箱/短信发送未经许可通知，不触碰现有 Vercel 部署与代理；运行在 GitHub-hosted Actions 可用配额内。改动可通过回滚本仓代码恢复；若需第三方监控服务或新凭据，先停在评估/申请阶段。
 
 ## 证据与进度
 - 规格审查：按现有源码、Issue #5 拟定；需要实现者复核最新 head。
-- 实施：NOT DONE
-- 集成验收：NOT RUN
-- 最近核对：2026-11-19 PT；当前 head 请以 PR 读回为准，数据主线会有定时提交。
+- 实施：本地候选代码已经完成；新 `scripts/source_health.py`、`scripts/check_freshness.py`、新增 PR checks/watchdog Actions 与 refresh fail-after-commit；**尚未合并**。
+- 本地实测：2026-11-20 07:03 UTC，5个来源、65条、health=healthy，23/23 单测通过；1个来源失效时退化路径由合成故障注入证明。
+- 集成验收：GitHub-hosted PR CI **待运行**；正式 schedule / watchdog 在 main 上尚未验收。系统仍受 GitHub 同平台 Cron 停摆风险，尚无外部独立 heartbeat。
+- 最近核对：2026-11-20 UTC；当前 PR head 请以 GitHub 读回为准，main 会继续由定时任务更新。
