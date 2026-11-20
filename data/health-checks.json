@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "checks": [
+    {
+      "attempted_at": "2026-11-20T07:10:51Z",
+      "status": "healthy",
+      "notices": 65,
+      "sources": [
+        {
+          "id": "zju-ai-admissions",
+          "status": "ok",
+          "count": 15,
+          "last_success_at": "2026-11-20T07:11:31Z"
+        },
+        {
+          "id": "zju-cs-search",
+          "status": "partial",
+          "count": 10,
+          "last_success_at": "2026-11-20T07:11:24Z"
+        },
+        {
+          "id": "zju-software-search",
+          "status": "partial",
+          "count": 10,
+          "last_success_at": "2026-11-20T07:11:24Z"
+        },
+        {
+          "id": "zju-scholarships-search",
+          "status": "partial",
+          "count": 10,
+          "last_success_at": "2026-11-20T07:11:24Z"
+        },
+        {
+          "id": "zju-mse-student",
+          "status": "ok",
+          "count": 20,
+          "last_success_at": "2026-11-20T07:11:24Z"
+        }
+      ],
+      "issues": []
+    }
+  ]
+}
