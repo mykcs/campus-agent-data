@@ -1,16 +1,16 @@
 {
   "version": 2,
-  "checked_at": "2026-11-21T07:14:32Z",
+  "checked_at": "2026-11-21T16:11:29Z",
   "timezone": "Asia/Shanghai",
   "sources": [
     {
       "id": "zju-ai-admissions",
       "name": "浙江大学人工智能学院 · 招生通知",
       "url": "https://ai.zju.edu.cn/zstz/list1.htm",
-      "last_checked_at": "2026-11-21T07:14:32Z",
+      "last_checked_at": "2026-11-21T16:11:29Z",
       "status": "ok",
       "count": 15,
-      "last_success_at": "2026-11-21T07:14:32Z"
+      "last_success_at": "2026-11-21T16:11:29Z"
     },
     {
       "id": "zju-cs-search",
@@ -19,8 +19,8 @@
       "status": "partial",
       "note": "浙江大学校级搜索提供的部分结果，不代表学院全部通知",
       "count": 10,
-      "last_checked_at": "2026-11-21T07:14:23Z",
-      "last_success_at": "2026-11-21T07:14:23Z"
+      "last_checked_at": "2026-11-21T16:11:20Z",
+      "last_success_at": "2026-11-21T16:11:20Z"
     },
     {
       "id": "zju-software-search",
@@ -29,8 +29,8 @@
       "status": "partial",
       "note": "浙江大学校级搜索提供的部分结果，不代表学院全部通知",
       "count": 10,
-      "last_checked_at": "2026-11-21T07:14:23Z",
-      "last_success_at": "2026-11-21T07:14:23Z"
+      "last_checked_at": "2026-11-21T16:11:20Z",
+      "last_success_at": "2026-11-21T16:11:20Z"
     },
     {
       "id": "zju-scholarships-search",
@@ -39,8 +39,8 @@
       "status": "partial",
       "note": "仅是校级公开关键词搜索的部分结果，并非全校奖助公告清单",
       "count": 10,
-      "last_checked_at": "2026-11-21T07:14:23Z",
-      "last_success_at": "2026-11-21T07:14:23Z"
+      "last_checked_at": "2026-11-21T16:11:20Z",
+      "last_success_at": "2026-11-21T16:11:20Z"
     },
     {
       "id": "zju-mse-student",
@@ -49,8 +49,8 @@
       "status": "ok",
       "note": "学院公开学生事务栏目",
       "count": 20,
-      "last_checked_at": "2026-11-21T07:14:23Z",
-      "last_success_at": "2026-11-21T07:14:23Z"
+      "last_checked_at": "2026-11-21T16:11:20Z",
+      "last_success_at": "2026-11-21T16:11:20Z"
     }
   ],
   "notices": [
