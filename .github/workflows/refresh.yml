@@ -30,16 +30,31 @@ jobs:
         run: python -m pip install "beautifulsoup4==4.14.2"
       - name: Unit tests
         run: python -m unittest discover -s tests -v
-      - name: Collect publicly accessible pages
+      - name: Collect publicly accessible pages and health receipt
+        id: collect
+        continue-on-error: true
         run: python scripts/collect.py
-      - name: Commit data only to the data repository
+      - name: Commit data and bounded health receipts
+        # Run even when a source is degraded, so public failure records
+        # are not lost to a preceding collector non-zero exit code.
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/notices.json
+          git add data/notices.json data/health-checks.json
           if git diff --cached --quiet; then
             echo "No changes"
           else
-            git commit -m "data: refresh public admissions notice index"
+            git commit -m "data: refresh public notices and health receipt"
             git push
+          fi
+      - name: Fail if public-source collection degraded or aborted
+        if: always()
+        env:
+          COLLECT_OUTCOME: ${{ steps.collect.outcome }}
+        run: |
+          echo "Collector outcome: $COLLECT_OUTCOME"
+          if [ "$COLLECT_OUTCOME" != "success" ]; then
+            echo "::error::Public source collection failed or degraded; inspect health-checks.json"
+            exit 1
           fi
