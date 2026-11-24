@@ -32,3 +32,48 @@ The scheduler can be delayed or skipped; data freshness is not a guarantee. Veri
 Only public HTML and official URLs are accessed. No SSO, school password, session cookie, WebVPN or nonpublic attachments. Applicant rosters and other personal lists are not downloaded and only their title + official URL are indexed. Non-list articles are stored only as short extracts; search-derived entries contain titles and URLs only. Official university pages are authoritative for eligibility, dates and procedures; this project is an independent index, not a school service.
 
 MIT licensed collector code; university content belongs to its respective owners. Never paste secrets, session tokens or personal student records into commits or issues.
+
+## Collector health, audit receipts, and missed schedules
+
+The collector publishes `data/notices.json` and a **bounded, metadata-only**
+`data/health-checks.json` receipt (latest 120 attempts). There are three
+independent ideas; they should not be conflated:
+
+- **ok**: source was fetched and parsed on this run; **partial** means the
+  underlying public search covers only some notices, not that it failed.
+- **degraded/error**: a source failed or data quality is suspicious; the
+  published notice snapshot retains last-known-good rows where available and
+  includes per-source failure status. The collector exits nonzero.
+- **fatal** (for example, a major unexplained count drop, duplicate identities,
+  or an aborted complete collection): the previous `data/notices.json` remains
+  unchanged. The failed attempt is recorded in `data/health-checks.json`.
+
+The refresh workflow deliberately **commits the truthful health receipt
+before failing the job** on a degraded collection. A green run means the
+run's collector checks passed, not that every configured public feed is
+complete or that the cron ran on schedule.
+
+A separate read-only `health-watch.yml` checks both the last snapshot's
+`checked_at` and the last recorded attempt every three hours, failing when
+the record is more than six hours old or the latest attempt was unhealthy.
+It is **still scheduled by GitHub Actions**: if GitHub stops firing both cron
+workflows, neither can reliably notify users. This is a detection aid, not an
+external uptime guarantee or opt-in student push notification.
+
+Useful commands:
+
+~~~sh
+uv run --with beautifulsoup4==4.14.2 python -m unittest discover -s tests -v
+python3 scripts/check_freshness.py --max-age-hours 6
+# Test against real public sources without altering production data:
+mkdir -p /tmp/campus-health-smoke
+cp data/notices.json /tmp/campus-health-smoke/notices.json
+uv run --with beautifulsoup4==4.14.2 python scripts/collect.py \
+  --output /tmp/campus-health-smoke/notices.json \
+  --checks-output /tmp/campus-health-smoke/health-checks.json --fast
+~~~
+
+GitHub workflow dispatch and scheduled runs are separate from a student's
+actual push-notification experience. PR tasks for alert delivery remain
+unfinished; no school credentials, student rosters, or BYOK keys enter the
+public health receipt.
