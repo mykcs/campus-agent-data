@@ -1,6 +1,6 @@
-# 多申请路径的截止日期证据模型与反误报测试 [Task spec only]
+# 多申请路径的截止日期证据模型与反误报测试 [Implementation candidate]
 
-> Status: Draft · TASK SPEC ONLY · Implementation: NOT DONE
+> Status: Draft · implementation candidate · exact-head CI and live collection pending
 > Workstream: typed-deadline-evidence · Size: M · Confidence: 中
 
 ## 目标及原因
@@ -37,6 +37,10 @@
 
 ## 证据与进度
 - 规格审查：根据 `extract_dates` 源码和项目 Wish；需实施前复核真实当前来源。
-- 实施：NOT DONE
-- 集成验收：NOT RUN
+- 实施：新增 `scripts/date_evidence.py`、兼容 `date_events`、保留 `date_candidates` 和用户人工确认；无年份或非法/未解析的小时分钟保留原始线索且 `value:null`。
+- 集成验收：候选分支待 GitHub exact-head tests 和公开源采集；无生产发布。
 - 最近核对：2026-11-19 PT；head 由 PR 读回。
+
+## 2026-11-24 · implementation scope
+
+`date_events` fields: `type` (open/close/internal/recommendation/postmark/unknown), `value` (ISO date or local date-time, null if unresolved), `raw`, `resolution`, `has_time`, explicit `timezone` or null, literal `scope_text` or null, bounded `context`, `source_url`, `verified:false`. No guessed year, assumed timezone, user eligibility or confirmed deadlines. The old candidate contract remains intact. Multiple same-day occurrences are retained. Title-only auxiliary sources need not supply this optional field. Attachments are linked but not parsed. Synthetic fixtures include cases from the two public notices at https://ai.zju.edu.cn/2026/1020/c90497a3216866/page.htm and https://ai.zju.edu.cn/2026/0810/c90497a3194262/page.htm; real-world extraction accuracy remains unverified until a separate sample run.

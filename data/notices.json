@@ -1,16 +1,16 @@
 {
   "version": 2,
-  "checked_at": "2026-11-19T15:42:19Z",
+  "checked_at": "2026-11-24T04:51:37Z",
   "timezone": "Asia/Shanghai",
   "sources": [
     {
       "id": "zju-ai-admissions",
       "name": "浙江大学人工智能学院 · 招生通知",
       "url": "https://ai.zju.edu.cn/zstz/list1.htm",
-      "last_checked_at": "2026-11-19T15:42:19Z",
+      "last_checked_at": "2026-11-24T04:51:37Z",
       "status": "ok",
       "count": 15,
-      "last_success_at": "2026-11-19T15:42:19Z"
+      "last_success_at": "2026-11-24T04:51:37Z"
     },
     {
       "id": "zju-cs-search",
@@ -19,8 +19,8 @@
       "status": "partial",
       "note": "浙江大学校级搜索提供的部分结果，不代表学院全部通知",
       "count": 10,
-      "last_checked_at": "2026-11-19T15:42:11Z",
-      "last_success_at": "2026-11-19T15:42:11Z"
+      "last_checked_at": "2026-11-24T04:51:26Z",
+      "last_success_at": "2026-11-24T04:51:26Z"
     },
     {
       "id": "zju-software-search",
@@ -29,8 +29,8 @@
       "status": "partial",
       "note": "浙江大学校级搜索提供的部分结果，不代表学院全部通知",
       "count": 10,
-      "last_checked_at": "2026-11-19T15:42:11Z",
-      "last_success_at": "2026-11-19T15:42:11Z"
+      "last_checked_at": "2026-11-24T04:51:26Z",
+      "last_success_at": "2026-11-24T04:51:26Z"
     },
     {
       "id": "zju-scholarships-search",
@@ -39,8 +39,8 @@
       "status": "partial",
       "note": "仅是校级公开关键词搜索的部分结果，并非全校奖助公告清单",
       "count": 10,
-      "last_checked_at": "2026-11-19T15:42:11Z",
-      "last_success_at": "2026-11-19T15:42:11Z"
+      "last_checked_at": "2026-11-24T04:51:26Z",
+      "last_success_at": "2026-11-24T04:51:26Z"
     },
     {
       "id": "zju-mse-student",
@@ -49,11 +49,69 @@
       "status": "ok",
       "note": "学院公开学生事务栏目",
       "count": 20,
-      "last_checked_at": "2026-11-19T15:42:11Z",
-      "last_success_at": "2026-11-19T15:42:11Z"
+      "last_checked_at": "2026-11-24T04:51:26Z",
+      "last_success_at": "2026-11-24T04:51:26Z"
     }
   ],
   "notices": [
+    {
+      "id": "9c08bc7ab1201049",
+      "url": "https://mse.zju.edu.cn/2026/1123/c51031a3230167/page.htm",
+      "title": "【本科生评奖评优20号】材料学院关于补充申报2025-2026学年院设奖（助）学金的通知",
+      "school": "浙江大学",
+      "department": "材料科学与工程学院",
+      "department_id": "zju-mse",
+      "source_id": "zju-mse-student",
+      "category": "奖助",
+      "topics": [
+        "scholarships"
+      ],
+      "published_at": "2026-11-23",
+      "date_inferred": true,
+      "excerpt": "仅提供官方标题与原文入口；请打开学校官网核对要求。",
+      "content": "",
+      "attachments": [],
+      "date_candidates": [],
+      "personal_list": false
+    },
+    {
+      "id": "2bceedab1ff422f8",
+      "url": "https://mse.zju.edu.cn/2026/1123/c51031a3230152/page.htm",
+      "title": "【本科生评奖评优19号】材料学院关于2025-2026学年院设奖（助）学金名单公示的通知",
+      "school": "浙江大学",
+      "department": "材料科学与工程学院",
+      "department_id": "zju-mse",
+      "source_id": "zju-mse-student",
+      "category": "奖助",
+      "topics": [
+        "scholarships"
+      ],
+      "published_at": "2026-11-23",
+      "date_inferred": true,
+      "excerpt": "仅提供官方标题与原文入口；请打开学校官网核对要求。",
+      "content": "",
+      "attachments": [],
+      "date_candidates": [],
+      "personal_list": true
+    },
+    {
+      "id": "0bef5f54fb300192",
+      "url": "https://mse.zju.edu.cn/2026/1123/c51031a3230030/page.htm",
+      "title": "【公示】材料科学与工程学院2025-2026学年NSEP项目立项结果公示",
+      "school": "浙江大学",
+      "department": "材料科学与工程学院",
+      "department_id": "zju-mse",
+      "source_id": "zju-mse-student",
+      "category": "通知",
+      "topics": [],
+      "published_at": "2026-11-23",
+      "date_inferred": true,
+      "excerpt": "仅提供官方标题与原文入口；请打开学校官网核对要求。",
+      "content": "",
+      "attachments": [],
+      "date_candidates": [],
+      "personal_list": true
+    },
     {
       "id": "df852cea94509548",
       "url": "https://mse.zju.edu.cn/2026/1119/c51031a3229169/page.htm",
@@ -406,44 +464,6 @@
       "personal_list": true
     },
     {
-      "id": "dee01e330758acf0",
-      "url": "https://mse.zju.edu.cn/2026/1022/c51031a3217852/page.htm",
-      "title": "【公示】材料学院2025-2026学年研究生个人荣誉称号及先进集体评选结果公示",
-      "school": "浙江大学",
-      "department": "材料科学与工程学院",
-      "department_id": "zju-mse",
-      "source_id": "zju-mse-student",
-      "category": "通知",
-      "topics": [],
-      "published_at": "2026-10-22",
-      "date_inferred": true,
-      "excerpt": "仅提供官方标题与原文入口；请打开学校官网核对要求。",
-      "content": "",
-      "attachments": [],
-      "date_candidates": [],
-      "personal_list": true
-    },
-    {
-      "id": "f6b58734d3f7de4e",
-      "url": "https://mse.zju.edu.cn/2026/1021/c51031a3217198/page.htm",
-      "title": "【奖誉】关于推荐2025年度（2025-2026学年）浙江省“康恩贝自强奖学金”的通知",
-      "school": "浙江大学",
-      "department": "材料科学与工程学院",
-      "department_id": "zju-mse",
-      "source_id": "zju-mse-student",
-      "category": "奖助",
-      "topics": [
-        "scholarships"
-      ],
-      "published_at": "2026-10-21",
-      "date_inferred": true,
-      "excerpt": "仅提供官方标题与原文入口；请打开学校官网核对要求。",
-      "content": "",
-      "attachments": [],
-      "date_candidates": [],
-      "personal_list": false
-    },
-    {
       "id": "b18cc4ec329dc326",
       "url": "https://ai.zju.edu.cn/2026/1020/c90497a3216866/page.htm",
       "title": "浙江大学人工智能学院2027年博士研究生招生简章",
@@ -502,26 +522,6 @@
         "admissions"
       ],
       "source_id": "zju-ai-admissions"
-    },
-    {
-      "id": "0b76eb8c578ef63c",
-      "url": "https://mse.zju.edu.cn/2026/1020/c51031a3217048/page.htm",
-      "title": "【本科生评奖评优15号】材料学院关于申报2025-2026学年浙江大学二等奖学金和三等奖学金的通知",
-      "school": "浙江大学",
-      "department": "材料科学与工程学院",
-      "department_id": "zju-mse",
-      "source_id": "zju-mse-student",
-      "category": "奖助",
-      "topics": [
-        "scholarships"
-      ],
-      "published_at": "2026-10-20",
-      "date_inferred": true,
-      "excerpt": "仅提供官方标题与原文入口；请打开学校官网核对要求。",
-      "content": "",
-      "attachments": [],
-      "date_candidates": [],
-      "personal_list": false
     },
     {
       "id": "26f37b84cc401881",
@@ -1153,24 +1153,6 @@
       "personal_list": false
     },
     {
-      "id": "58e4ced21738091d",
-      "url": "http://www.cst.zju.edu.cn/2026/0521/c36224a3164962/page.htm",
-      "title": "关于公布软件学院 2026年研究生“五好”导学团队的通知",
-      "school": "浙江大学",
-      "department": "软件学院",
-      "department_id": "zju-software",
-      "source_id": "zju-software-search",
-      "category": "通知",
-      "topics": [],
-      "published_at": "2026-05-21",
-      "date_inferred": false,
-      "excerpt": "仅提供官方标题与原文入口；请打开学校官网核对要求。",
-      "content": "",
-      "attachments": [],
-      "date_candidates": [],
-      "personal_list": false
-    },
-    {
       "id": "47dd00a65bd4e46b",
       "url": "http://www.cs.zju.edu.cn/csen/2026/0513/c27006a3162028/page.htm",
       "title": "计算机科学与技术学院 2026年面向港澳台地区研究生招生复试录取方案",
@@ -1207,6 +1189,24 @@
       "attachments": [],
       "date_candidates": [],
       "personal_list": false
+    },
+    {
+      "id": "dfac4d3821a59974",
+      "url": "http://www.cst.zju.edu.cn/2026/0413/c32178a3150773/page.htm",
+      "title": "关于浙江大学软件学院 2026年拟录取研究生政审、调档和党团组织关系转接等工作的通知",
+      "school": "浙江大学",
+      "department": "软件学院",
+      "department_id": "zju-software",
+      "source_id": "zju-software-search",
+      "category": "通知",
+      "topics": [],
+      "published_at": "2026-04-13",
+      "date_inferred": false,
+      "excerpt": "仅提供官方标题与原文入口；请打开学校官网核对要求。",
+      "content": "",
+      "attachments": [],
+      "date_candidates": [],
+      "personal_list": true
     },
     {
       "id": "b4c9b3764d1c0b35",
