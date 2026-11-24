@@ -11,8 +11,10 @@ This repository contains public university notice indexes, independent of [the w
 | ZJU School of Software Technology | [ZJU official public search](https://s2.zju.edu.cn/search/info.do?words=%E8%BD%AF%E4%BB%B6%E5%AD%A6%E9%99%A2) | **Partial search results**, not full college monitoring |
 | Scholarship notices across ZJU | [ZJU official public search](https://s2.zju.edu.cn/search/info.do?words=%E5%A5%96%E5%AD%A6%E9%87%91) | **Partial search results** |
 | ZJU Materials School — student affairs | [Official public student notices](https://mse.zju.edu.cn/51031/list.htm) | Direct public list |
+| ZJU History School — student aid | [Official student funding notices](https://ls.zju.edu.cn/65208/list.htm) | Direct public aid list; school-local scope only |
+| ZJU College of Engineering — scholarships within student affairs | [Official student affairs notices](https://pi.zju.edu.cn/67027/list.htm) | **Partial**: keyword-filtered from a broader public list |
 
-The college search hits may lag behind source publications, be ranked by relevance rather than chronology, and miss notices. The website exposes `status: partial` for this reason. When public portals refuse access, this scraper does not bypass campus restrictions.
+The college search hits may lag behind source publications, be ranked by relevance rather than chronology, and miss notices. The History School and Engineering College additions are **separate publicly readable college sources**; neither proves whole-ZJU scholarship coverage. They only store a public title, canonical university URL, date and source status; people-list bodies are not mirrored. The website exposes `status: partial` for this reason. When public portals refuse access, this scraper does not bypass campus restrictions.
 
 ## Run
 
