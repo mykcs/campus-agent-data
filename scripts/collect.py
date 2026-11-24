@@ -17,8 +17,10 @@ from bs4 import BeautifulSoup
 
 if __package__:
     from .additional_sources import collect_additional, topics
+    from .source_health import assess_snapshot, append_receipt, receipt, utc_now
 else:
     from additional_sources import collect_additional, topics
+    from source_health import assess_snapshot, append_receipt, receipt, utc_now
 
 SOURCE_ID = "zju-ai-admissions"
 BASE = "https://ai.zju.edu.cn"
@@ -230,6 +232,7 @@ def collect(previous: dict | None = None, delay: float = 0.6) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", default="data/notices.json")
+    parser.add_argument("--checks-output", default="data/health-checks.json")
     parser.add_argument("--fast", action="store_true", help="Use only for local verification")
     args = parser.parse_args()
     out = Path(args.output)
@@ -239,17 +242,43 @@ def main() -> int:
             old = json.loads(out.read_text(encoding="utf-8"))
         except Exception:
             pass
-    snapshot = collect(previous=old, delay=0 if args.fast else 0.6)
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    checked_at = utc_now()
+    checks_path = Path(args.checks_output)
+    try:
+        snapshot = collect(previous=old, delay=0 if args.fast else 0.6)
+        evaluated = assess_snapshot(snapshot, old)
+    except Exception as exc:
+        # Keep last good notices snapshot untouched on total failure.
+        evaluated = {
+            "status": "failed",
+            "issues": [{"code": "collector_aborted", "source_id": "*", "severity": "fatal"}],
+        }
+        snapshot = None
+        # Do not store the exception/URLs in the public health receipt.
+        print(json.dumps({"status": "failed", "code": "collector_aborted",
+                          "exception_type": type(exc).__name__}), file=sys.stderr)
+
+    append_receipt(checks_path, receipt(
+        evaluated["status"], current=snapshot, issues=evaluated["issues"], attempted_at=checked_at
+    ))
+    if snapshot is not None and evaluated["status"] != "failed":
+        # Partial-source failure: publish source-level errors and last-known-good
+        # records, then let CI fail after committing the truthful receipt.
+        snapshot["health"] = {
+            "status": evaluated["status"], "assessed_at": checked_at,
+            "issues": evaluated["issues"][:25]
+        }
+        out.parent.mkdir(parents=True, exist_ok=True)
+        temp = out.with_name(out.name + ".tmp")
+        temp.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        temp.replace(out)
     print(json.dumps({
-        "notice_count": len(snapshot["notices"]),
-        "checked_at": snapshot["checked_at"],
-        "status": snapshot["sources"][0]["status"],
-        "errors": snapshot["errors"][:2],
+        "status": evaluated["status"],
+        "notice_count": len(snapshot["notices"]) if snapshot else None,
+        "issue_codes": [issue["code"] for issue in evaluated["issues"]],
+        "checked_at": checked_at,
     }, ensure_ascii=False))
-    # Partial-source failures stay visible in the snapshot without hiding healthy sources.
-    return 0 if len(snapshot["notices"]) >= 3 else 2
+    return 0 if evaluated["status"] == "healthy" else 2
 
 if __name__ == "__main__":
     sys.exit(main())
