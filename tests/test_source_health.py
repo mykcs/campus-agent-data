@@ -73,6 +73,28 @@ class SourceHealthTests(unittest.TestCase):
         now["notices"][1]["id"] = now["notices"][0]["id"]
         self.assertEqual(assess_snapshot(now)["status"], "failed")
 
+    def test_unattributed_notice_fails_closed(self):
+        for source_id, code in ((None, "notice_source_missing"),
+                                ("", "notice_source_missing"),
+                                ("unregistered-source", "notice_source_unknown")):
+            with self.subTest(source_id=source_id):
+                snap = example()
+                snap["notices"][0]["source_id"] = source_id
+                health = assess_snapshot(snap)
+                self.assertEqual(health["status"], "failed")
+                self.assertIn(code, [issue["code"] for issue in health["issues"]])
+
+    def test_success_without_valid_timestamp_fails_closed(self):
+        for status in ("ok", "partial"):
+            for timestamp in (None, "not-a-date"):
+                with self.subTest(status=status, timestamp=timestamp):
+                    snap = example(status=status)
+                    snap["sources"][0]["last_success_at"] = timestamp
+                    health = assess_snapshot(snap)
+                    self.assertEqual(health["status"], "failed")
+                    self.assertIn("source_success_time_missing",
+                                  [issue["code"] for issue in health["issues"]])
+
     def test_previous_notice_ids_can_be_deduplicated_across_sources(self):
         old = example()
         now = example(status="partial", checked="2026-11-20T08:00:00Z")

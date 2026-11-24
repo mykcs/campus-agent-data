@@ -56,8 +56,10 @@ def assess_snapshot(current: dict, previous: dict | None = None) -> dict:
             issues.append({"code": "duplicate_notice_id", "source_id": "*", "severity": "fatal"})
         record_ids.add(rid)
         source_id = row.get("source_id")
-        if isinstance(source_id, str):
+        if isinstance(source_id, str) and source_id:
             counted[source_id] = counted.get(source_id, 0) + 1
+        else:
+            issues.append({"code": "notice_source_missing", "source_id": "*", "severity": "fatal"})
 
     prev_sources = {
         row["id"]: row for row in previous.get("sources", [])
@@ -81,6 +83,8 @@ def assess_snapshot(current: dict, previous: dict | None = None) -> dict:
         last_success = parse_utc(src.get("last_success_at"))
         if last_check is None:
             issues.append({"code": "source_check_time_missing", "source_id": sid, "severity": "warning"})
+        if status in {"ok", "partial"} and last_success is None:
+            issues.append({"code": "source_success_time_missing", "source_id": sid, "severity": "fatal"})
         if last_check and last_success and last_success > last_check:
             issues.append({"code": "future_success_time", "source_id": sid, "severity": "fatal"})
         old = prev_sources.get(sid, {})
@@ -108,6 +112,11 @@ def assess_snapshot(current: dict, previous: dict | None = None) -> dict:
                 "before": previous_count,
                 "after": current_count,
             })
+
+    # Every published notice must be attributable to a registered source.
+    # Do not echo unexpected IDs into the public health receipt.
+    if set(counted) - source_ids:
+        issues.append({"code": "notice_source_unknown", "source_id": "*", "severity": "fatal"})
 
     missing = set(prev_sources) - source_ids
     for sid in sorted(missing):
