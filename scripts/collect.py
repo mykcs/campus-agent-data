@@ -18,9 +18,11 @@ from bs4 import BeautifulSoup
 if __package__:
     from .additional_sources import collect_additional, topics
     from .source_health import assess_snapshot, append_receipt, receipt, utc_now
+    from .date_evidence import extract_date_events
 else:
     from additional_sources import collect_additional, topics
     from source_health import assess_snapshot, append_receipt, receipt, utc_now
+    from date_evidence import extract_date_events
 
 SOURCE_ID = "zju-ai-admissions"
 BASE = "https://ai.zju.edu.cn"
@@ -109,7 +111,7 @@ def article_data(html: str, url: str) -> dict:
             "excerpt": "官方网页没有可提取的文字正文，请打开官方原文核对。",
             "content": "",
             "content_sha256": hashlib.sha256(full_text.encode()).hexdigest(),
-            "attachments": [], "date_candidates": [], "text_unavailable": True,
+            "attachments": [], "date_candidates": [], "date_events": [], "text_unavailable": True,
         }
     files = []
     urls = set()
@@ -135,6 +137,7 @@ def article_data(html: str, url: str) -> dict:
         "content_sha256": hashlib.sha256(full_text.encode()).hexdigest(),
         "attachments": files[:25],
         "date_candidates": extract_dates(full_text),
+        "date_events": extract_date_events(full_text, url),
     }
 
 def classify(title: str) -> str:
@@ -170,7 +173,7 @@ def collect(previous: dict | None = None, delay: float = 0.6) -> dict:
             item.update({
                 "excerpt": "人员名单或公示仅保留官方标题和链接，不镜像正文。",
                 "content": "", "content_sha256": None,
-                "attachments": [], "date_candidates": [], "personal_list": True,
+                "attachments": [], "date_candidates": [], "date_events": [], "personal_list": True,
             })
         else:
             try:
@@ -180,8 +183,9 @@ def collect(previous: dict | None = None, delay: float = 0.6) -> dict:
                 if item["id"] in previous_items:
                     details = {
                         k: previous_items[item["id"]].get(k)
-                        for k in ("excerpt", "content", "content_sha256", "attachments", "date_candidates")
+                        for k in ("excerpt", "content", "content_sha256", "attachments", "date_candidates", "date_events")
                     }
+                    details["date_events"] = details.get("date_events") or []
                     item.update(details)
                 else:
                     errors.append(f"Article {item['url']}: {type(exc).__name__}: {exc}")
