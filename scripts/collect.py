@@ -17,8 +17,12 @@ from bs4 import BeautifulSoup
 
 if __package__:
     from .additional_sources import collect_additional, topics
+    from .source_health import assess_snapshot, append_receipt, receipt, utc_now
+    from .date_evidence import extract_date_events
 else:
     from additional_sources import collect_additional, topics
+    from source_health import assess_snapshot, append_receipt, receipt, utc_now
+    from date_evidence import extract_date_events
 
 SOURCE_ID = "zju-ai-admissions"
 BASE = "https://ai.zju.edu.cn"
@@ -107,7 +111,7 @@ def article_data(html: str, url: str) -> dict:
             "excerpt": "官方网页没有可提取的文字正文，请打开官方原文核对。",
             "content": "",
             "content_sha256": hashlib.sha256(full_text.encode()).hexdigest(),
-            "attachments": [], "date_candidates": [], "text_unavailable": True,
+            "attachments": [], "date_candidates": [], "date_events": [], "text_unavailable": True,
         }
     files = []
     urls = set()
@@ -133,6 +137,7 @@ def article_data(html: str, url: str) -> dict:
         "content_sha256": hashlib.sha256(full_text.encode()).hexdigest(),
         "attachments": files[:25],
         "date_candidates": extract_dates(full_text),
+        "date_events": extract_date_events(full_text, url),
     }
 
 def classify(title: str) -> str:
@@ -168,7 +173,7 @@ def collect(previous: dict | None = None, delay: float = 0.6) -> dict:
             item.update({
                 "excerpt": "人员名单或公示仅保留官方标题和链接，不镜像正文。",
                 "content": "", "content_sha256": None,
-                "attachments": [], "date_candidates": [], "personal_list": True,
+                "attachments": [], "date_candidates": [], "date_events": [], "personal_list": True,
             })
         else:
             try:
@@ -178,8 +183,9 @@ def collect(previous: dict | None = None, delay: float = 0.6) -> dict:
                 if item["id"] in previous_items:
                     details = {
                         k: previous_items[item["id"]].get(k)
-                        for k in ("excerpt", "content", "content_sha256", "attachments", "date_candidates")
+                        for k in ("excerpt", "content", "content_sha256", "attachments", "date_candidates", "date_events")
                     }
+                    details["date_events"] = details.get("date_events") or []
                     item.update(details)
                 else:
                     errors.append(f"Article {item['url']}: {type(exc).__name__}: {exc}")
@@ -230,6 +236,7 @@ def collect(previous: dict | None = None, delay: float = 0.6) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", default="data/notices.json")
+    parser.add_argument("--checks-output", default="data/health-checks.json")
     parser.add_argument("--fast", action="store_true", help="Use only for local verification")
     args = parser.parse_args()
     out = Path(args.output)
@@ -239,17 +246,43 @@ def main() -> int:
             old = json.loads(out.read_text(encoding="utf-8"))
         except Exception:
             pass
-    snapshot = collect(previous=old, delay=0 if args.fast else 0.6)
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    checked_at = utc_now()
+    checks_path = Path(args.checks_output)
+    try:
+        snapshot = collect(previous=old, delay=0 if args.fast else 0.6)
+        evaluated = assess_snapshot(snapshot, old)
+    except Exception as exc:
+        # Keep last good notices snapshot untouched on total failure.
+        evaluated = {
+            "status": "failed",
+            "issues": [{"code": "collector_aborted", "source_id": "*", "severity": "fatal"}],
+        }
+        snapshot = None
+        # Do not store the exception/URLs in the public health receipt.
+        print(json.dumps({"status": "failed", "code": "collector_aborted",
+                          "exception_type": type(exc).__name__}), file=sys.stderr)
+
+    append_receipt(checks_path, receipt(
+        evaluated["status"], current=snapshot, issues=evaluated["issues"], attempted_at=checked_at
+    ))
+    if snapshot is not None and evaluated["status"] != "failed":
+        # Partial-source failure: publish source-level errors and last-known-good
+        # records, then let CI fail after committing the truthful receipt.
+        snapshot["health"] = {
+            "status": evaluated["status"], "assessed_at": checked_at,
+            "issues": evaluated["issues"][:25]
+        }
+        out.parent.mkdir(parents=True, exist_ok=True)
+        temp = out.with_name(out.name + ".tmp")
+        temp.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        temp.replace(out)
     print(json.dumps({
-        "notice_count": len(snapshot["notices"]),
-        "checked_at": snapshot["checked_at"],
-        "status": snapshot["sources"][0]["status"],
-        "errors": snapshot["errors"][:2],
+        "status": evaluated["status"],
+        "notice_count": len(snapshot["notices"]) if snapshot else None,
+        "issue_codes": [issue["code"] for issue in evaluated["issues"]],
+        "checked_at": checked_at,
     }, ensure_ascii=False))
-    # Partial-source failures stay visible in the snapshot without hiding healthy sources.
-    return 0 if len(snapshot["notices"]) >= 3 else 2
+    return 0 if evaluated["status"] == "healthy" else 2
 
 if __name__ == "__main__":
     sys.exit(main())
