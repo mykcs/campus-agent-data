@@ -40,3 +40,7 @@
 - 实施：NOT DONE
 - 集成验收：NOT RUN
 - 最近核对：2026-11-19 PT；以当前 PR head 为准。
+
+## 2026-11-24 implementation
+
+Added the anonymous official [SIGS public admissions list](https://www.sigs.tsinghua.edu.cn/_s3/7770/list.psp), bounded to recent list items and the verified column URL pattern. Metadata only; explicit per-row publication dates take precedence over URL-inferred dates, no eligibility or deadline inference. The source is partial, not university-wide. The live local collection on 2026-11-24 16:46 UTC returned 113 total entries from 10 source identities, including 8 SIGS items, zero errors. 37/37 unit tests passed. Central graduate admissions and other departments are not claimed as covered. GitHub read-only live smoke and main readback are release gates.

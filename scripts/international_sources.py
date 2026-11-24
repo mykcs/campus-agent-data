@@ -18,6 +18,11 @@ GLOBAL_SOURCES = [
          url="https://oge.mit.edu/fellowships/", host="oge.mit.edu",
          timezone="America/New_York", status="partial", kind="oge",
          note="Public funding reference pages; no publication date or open-application status is assumed."),
+    dict(id="tsinghua-sigs-admissions", school="清华大学", department="深圳国际研究生院",
+         department_id="tsinghua-sigs", name="清华大学深圳国际研究生院 · 招生公告",
+         url="https://www.sigs.tsinghua.edu.cn/_s3/7770/list.psp", host="www.sigs.tsinghua.edu.cn",
+         timezone="Asia/Singapore", status="partial", kind="sigs",
+         note="Only the recent public admissions list, not all Tsinghua departments."),
 ]
 OGE_PATHS = {
     "/fellowships/oge-fellowships-and-awards/",
@@ -40,6 +45,8 @@ def allowed_article(url, spec):
             return bool(HST.fullmatch(u.path))
         if spec["kind"] == "oge":
             return u.path in OGE_PATHS
+        if spec["kind"] == "sigs":
+            return bool(re.fullmatch(r"/20\d{2}/\d{4}/c7770a\d+/page\.htm",u.path))
         return False
     except (ValueError, TypeError):
         return False
@@ -73,6 +80,7 @@ def parse_public_list(html, spec):
         if len(title) < 8:
             continue
         published = None
+        inferred = False
         if spec["kind"] == "hst":
             m = EN_DATE.fullmatch(title)
             if not m:
@@ -86,13 +94,35 @@ def parse_public_list(html, spec):
         elif spec["kind"] == "oge":
             if title.lower() in {"learn more", "read more"}:
                 continue
+        elif spec["kind"] == "sigs":
+            # Read the date only from a row containing this exact article;
+            # a link to the same article may occur more than once in that row.
+            for node in list(a.parents)[:4]:
+                links = {urljoin(spec["url"], l.get("href","")) for l in node.select("a[href]")}
+                if len({link for link in links if allowed_article(link,spec)}) > 1:
+                    break
+                matches = set(re.findall(r"20\d{2}-\d{2}-\d{2}",node.get_text(" ",strip=True)))
+                if len(matches)==1:
+                    try:
+                        published = date.fromisoformat(matches.pop()).isoformat()
+                    except ValueError:
+                        pass
+                    if published:
+                        break
+            if not published:
+                m = re.match(r"/(20\d{2})/(\d{2})(\d{2})/",urlsplit(url).path)
+                try:
+                    published = date(*map(int,m.groups())).isoformat()
+                    inferred = True
+                except (ValueError, AttributeError):
+                    continue
         records[url] = {
             "id": hashlib.sha256(url.encode()).hexdigest()[:16],
             "url":url, "title":title[:190], "school":spec["school"],
             "department":spec["department"], "department_id":spec["department_id"],
-            "source_id":spec["id"], "category":"奖助" if spec["kind"]=="oge" else "通知",
-            "topics":["scholarships"] if spec["kind"]=="oge" else [],
-            "published_at":published, "date_inferred":False, "timezone":spec["timezone"],
+            "source_id":spec["id"], "category":"奖助" if spec["kind"]=="oge" else "招生" if spec["kind"]=="sigs" else "通知",
+            "topics":["scholarships"] if spec["kind"]=="oge" else ["admissions"] if spec["kind"]=="sigs" else [],
+            "published_at":published, "date_inferred":inferred, "timezone":spec["timezone"],
             "excerpt":"仅提供学校公开原文入口；申请日期与适用条件须核对原文。",
             "content":"", "attachments":[], "date_candidates":[], "date_events":[],
             "personal_list":False,
