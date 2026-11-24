@@ -40,3 +40,9 @@
 - 实施：NOT DONE
 - 集成验收：NOT RUN
 - 最近核对：2026-11-19 PT；PR 当前 head 需复核。
+
+## 2026-11-24 implementation and evidence
+
+Implemented two fixed MIT public source adapters: HST TWiHST dated newsletter issues, and OGE official funding reference pages. Both are partial: the newsletter is not an opportunity-level complete feed, and funding references have no assumed publication date, deadline, or open application status. Source timestamps, region, department and canonical MIT URL remain separate. No article bodies, rosters or MIT login are fetched.
+
+Local live run 2026-11-24 16:43 UTC: **105 notices / 9 sources / 0 errors**; 15 HST issues + 5 OGE references, prior seven ZJU sources retained. 36/36 unit tests pass, including strict host/path, duplicate links, no inferred funding deadline and stale-cache on error. GitHub manual read-only smoke uses temporary output, not branch or production data commits. Production readback remains an independent gate.

@@ -77,3 +77,10 @@ GitHub workflow dispatch and scheduled runs are separate from a student's
 actual push-notification experience. PR tasks for alert delivery remain
 unfinished; no school credentials, student rosters, or BYOK keys enter the
 public health receipt.
+
+## MIT public sources
+
+- [Harvard-MIT HST TWiHST archive](https://hst.mit.edu/news-events/twihst): up to 15 dated newsletter issues, partial coverage.
+- [MIT OGE fellowships](https://oge.mit.edu/fellowships/): five official funding reference links, no inferred publication date, current availability or deadline. Partial coverage.
+
+International sources use fixed HTTPS hosts and explicit link patterns; login/external redirects are rejected. Metadata only; no notice body copied. To independently verify a collector candidate in GitHub-hosted CI, manually dispatch `checks.yml` on that branch: it runs a public-source collection into temporary files without committing data.
