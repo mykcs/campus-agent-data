@@ -84,3 +84,7 @@ public health receipt.
 - [MIT OGE fellowships](https://oge.mit.edu/fellowships/): five official funding reference links, no inferred publication date, current availability or deadline. Partial coverage.
 
 International sources use fixed HTTPS hosts and explicit link patterns; login/external redirects are rejected. Metadata only; no notice body copied. To independently verify a collector candidate in GitHub-hosted CI, manually dispatch `checks.yml` on that branch: it runs a public-source collection into temporary files without committing data.
+
+## Tsinghua public source
+
+[Shenzhen International Graduate School admissions notices](https://www.sigs.tsinghua.edu.cn/_s3/7770/list.psp): recent official public notice titles, URLs and row dates. Partial coverage; no school authentication or applicant details. URL-derived dates are explicitly marked inferred. The central admissions site and other departments are not included in this source.
