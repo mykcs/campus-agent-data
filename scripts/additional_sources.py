@@ -13,6 +13,11 @@ from urllib.request import Request, urlopen
 
 from bs4 import BeautifulSoup
 
+if __package__:
+    from .international_sources import GLOBAL_SOURCES, allowed_article, fetch_public_list, parse_public_list
+else:
+    from international_sources import GLOBAL_SOURCES, allowed_article, fetch_public_list, parse_public_list
+
 ARTICLE = re.compile(r"/20\d{2}/\d{4}/c\d+a\d+/(?:page|pagem)\.htm$", re.I)
 DATE = re.compile(r"20\d{2}[-./]\d{1,2}[-./]\d{1,2}")
 PUBLISHED = re.compile(r"发布时间[:：]?\s*(20\d{2}[-./]\d{1,2}[-./]\d{1,2})")
@@ -63,7 +68,7 @@ QUERIES = [
         "scholarships_only":True,
         "note":"从工程师学院公开学生工作栏目仅筛选标题含奖助关键词的通知"
     }
-]
+] + GLOBAL_SOURCES
 
 def official(url: str) -> bool:
     try:
@@ -75,6 +80,9 @@ def official(url: str) -> bool:
         return False
 
 def fetch_public_html(url: str) -> str:
+    global_spec = next((s for s in GLOBAL_SOURCES if s['url'] == url), None)
+    if global_spec:
+        return fetch_public_list(url, global_spec)
     u=urlparse(url)
     # The source list is a fixed allowlist; no arbitrary user-supplied URLs.
     if u.scheme!="https" or u.hostname not in {"s2.zju.edu.cn","mse.zju.edu.cn","ls.zju.edu.cn","pi.zju.edu.cn"}:
@@ -151,6 +159,8 @@ def category(title: str) -> str:
     return "通知"
 
 def parse_source(html: str, config: dict) -> list[dict]:
+    if config in GLOBAL_SOURCES:
+        return parse_public_list(html, config)
     soup=BeautifulSoup(html,"html.parser")
     items=[]
     seen=set()
@@ -216,6 +226,8 @@ def collect_additional(previous: dict|None=None) -> tuple[list[dict],list[dict],
             notices.extend(rows)
             sources.append({
                 "id":source_id,"name":spec["name"],"url":spec["url"],
+                "school":spec.get("school","浙江大学"),"department_id":spec["department_id"],
+                "department":spec.get("department",spec["name"]),"timezone":spec.get("timezone","Asia/Singapore"),
                 "status":spec["status"],"note":spec["note"],
                 "count":len(rows),"last_checked_at":now,"last_success_at":now
             })
@@ -223,12 +235,14 @@ def collect_additional(previous: dict|None=None) -> tuple[list[dict],list[dict],
             cached=[x for x in prior.values() if x.get("source_id")==source_id]
             # Cached records may be stale but should not disappear silently.
             for x in cached:
-                if official(x.get("url","")):
+                if (allowed_article(x.get('url',''), spec) if spec in GLOBAL_SOURCES else official(x.get('url',''))):
                     y=dict(x)
                     y["stale"]=True
                     notices.append(y)
             sources.append({
                 "id":source_id,"name":spec["name"],"url":spec["url"],
+                "school":spec.get("school","浙江大学"),"department_id":spec["department_id"],
+                "department":spec.get("department",spec["name"]),"timezone":spec.get("timezone","Asia/Singapore"),
                 "status":"error","note":spec["note"],
                 "count":len(cached),"last_checked_at":now,
                 "last_success_at":next((s.get("last_success_at") for s in previous.get("sources",[]) if s.get("id")==source_id),None),
