@@ -564,6 +564,74 @@
         }
       ],
       "issues": []
+    },
+    {
+      "attempted_at": "2026-11-27T04:17:44Z",
+      "status": "healthy",
+      "notices": 112,
+      "sources": [
+        {
+          "id": "zju-ai-admissions",
+          "status": "ok",
+          "count": 15,
+          "last_success_at": "2026-11-27T04:18:48Z"
+        },
+        {
+          "id": "zju-cs-search",
+          "status": "partial",
+          "count": 10,
+          "last_success_at": "2026-11-27T04:18:30Z"
+        },
+        {
+          "id": "zju-software-search",
+          "status": "partial",
+          "count": 10,
+          "last_success_at": "2026-11-27T04:18:30Z"
+        },
+        {
+          "id": "zju-scholarships-search",
+          "status": "partial",
+          "count": 10,
+          "last_success_at": "2026-11-27T04:18:30Z"
+        },
+        {
+          "id": "zju-mse-student",
+          "status": "ok",
+          "count": 20,
+          "last_success_at": "2026-11-27T04:18:30Z"
+        },
+        {
+          "id": "zju-history-aid",
+          "status": "ok",
+          "count": 14,
+          "last_success_at": "2026-11-27T04:18:30Z"
+        },
+        {
+          "id": "zju-engineering-aid",
+          "status": "partial",
+          "count": 5,
+          "last_success_at": "2026-11-27T04:18:30Z"
+        },
+        {
+          "id": "mit-hst-bulletin",
+          "status": "partial",
+          "count": 15,
+          "last_success_at": "2026-11-27T04:18:30Z"
+        },
+        {
+          "id": "mit-oge-funding",
+          "status": "partial",
+          "count": 5,
+          "last_success_at": "2026-11-27T04:18:30Z"
+        },
+        {
+          "id": "tsinghua-sigs-admissions",
+          "status": "partial",
+          "count": 8,
+          "last_success_at": "2026-11-27T04:18:30Z"
+        }
+      ],
+      "issues": []
     }
   ]
 }
