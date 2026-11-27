@@ -1,16 +1,16 @@
 {
   "version": 2,
-  "checked_at": "2026-11-27T04:18:48Z",
+  "checked_at": "2026-11-27T16:44:12Z",
   "timezone": "Asia/Shanghai",
   "sources": [
     {
       "id": "zju-ai-admissions",
       "name": "浙江大学人工智能学院 · 招生通知",
       "url": "https://ai.zju.edu.cn/zstz/list1.htm",
-      "last_checked_at": "2026-11-27T04:18:48Z",
+      "last_checked_at": "2026-11-27T16:44:12Z",
       "status": "ok",
       "count": 15,
-      "last_success_at": "2026-11-27T04:18:48Z"
+      "last_success_at": "2026-11-27T16:44:12Z"
     },
     {
       "id": "zju-cs-search",
@@ -23,8 +23,8 @@
       "status": "partial",
       "note": "浙江大学校级搜索提供的部分结果，不代表学院全部通知",
       "count": 10,
-      "last_checked_at": "2026-11-27T04:18:30Z",
-      "last_success_at": "2026-11-27T04:18:30Z"
+      "last_checked_at": "2026-11-27T16:43:57Z",
+      "last_success_at": "2026-11-27T16:43:57Z"
     },
     {
       "id": "zju-software-search",
@@ -37,8 +37,8 @@
       "status": "partial",
       "note": "浙江大学校级搜索提供的部分结果，不代表学院全部通知",
       "count": 10,
-      "last_checked_at": "2026-11-27T04:18:30Z",
-      "last_success_at": "2026-11-27T04:18:30Z"
+      "last_checked_at": "2026-11-27T16:43:57Z",
+      "last_success_at": "2026-11-27T16:43:57Z"
     },
     {
       "id": "zju-scholarships-search",
@@ -51,8 +51,8 @@
       "status": "partial",
       "note": "仅是校级公开关键词搜索的部分结果，并非全校奖助公告清单",
       "count": 10,
-      "last_checked_at": "2026-11-27T04:18:30Z",
-      "last_success_at": "2026-11-27T04:18:30Z"
+      "last_checked_at": "2026-11-27T16:43:57Z",
+      "last_success_at": "2026-11-27T16:43:57Z"
     },
     {
       "id": "zju-mse-student",
@@ -65,8 +65,8 @@
       "status": "ok",
       "note": "学院公开学生事务栏目",
       "count": 20,
-      "last_checked_at": "2026-11-27T04:18:30Z",
-      "last_success_at": "2026-11-27T04:18:30Z"
+      "last_checked_at": "2026-11-27T16:43:57Z",
+      "last_success_at": "2026-11-27T16:43:57Z"
     },
     {
       "id": "zju-history-aid",
@@ -79,8 +79,8 @@
       "status": "ok",
       "note": "只覆盖历史学院公开学生资助栏目，不能代表全校奖学金",
       "count": 14,
-      "last_checked_at": "2026-11-27T04:18:30Z",
-      "last_success_at": "2026-11-27T04:18:30Z"
+      "last_checked_at": "2026-11-27T16:43:57Z",
+      "last_success_at": "2026-11-27T16:43:57Z"
     },
     {
       "id": "zju-engineering-aid",
@@ -93,8 +93,8 @@
       "status": "partial",
       "note": "从工程师学院公开学生工作栏目仅筛选标题含奖助关键词的通知",
       "count": 5,
-      "last_checked_at": "2026-11-27T04:18:30Z",
-      "last_success_at": "2026-11-27T04:18:30Z"
+      "last_checked_at": "2026-11-27T16:43:57Z",
+      "last_success_at": "2026-11-27T16:43:57Z"
     },
     {
       "id": "mit-hst-bulletin",
@@ -107,8 +107,8 @@
       "status": "partial",
       "note": "Only recent dated issues from the public HST archive; individual opportunities require opening the original newsletter.",
       "count": 15,
-      "last_checked_at": "2026-11-27T04:18:30Z",
-      "last_success_at": "2026-11-27T04:18:30Z"
+      "last_checked_at": "2026-11-27T16:43:57Z",
+      "last_success_at": "2026-11-27T16:43:57Z"
     },
     {
       "id": "mit-oge-funding",
@@ -121,8 +121,8 @@
       "status": "partial",
       "note": "Public funding reference pages; no publication date or open-application status is assumed.",
       "count": 5,
-      "last_checked_at": "2026-11-27T04:18:30Z",
-      "last_success_at": "2026-11-27T04:18:30Z"
+      "last_checked_at": "2026-11-27T16:43:57Z",
+      "last_success_at": "2026-11-27T16:43:57Z"
     },
     {
       "id": "tsinghua-sigs-admissions",
@@ -135,8 +135,8 @@
       "status": "partial",
       "note": "Only the recent public admissions list, not all Tsinghua departments.",
       "count": 8,
-      "last_checked_at": "2026-11-27T04:18:30Z",
-      "last_success_at": "2026-11-27T04:18:30Z"
+      "last_checked_at": "2026-11-27T16:43:57Z",
+      "last_success_at": "2026-11-27T16:43:57Z"
     }
   ],
   "notices": [
@@ -2269,24 +2269,6 @@
       "personal_list": false
     },
     {
-      "id": "58e4ced21738091d",
-      "url": "http://www.cst.zju.edu.cn/2026/0521/c36224a3164962/page.htm",
-      "title": "关于公布软件学院 2026年研究生“五好”导学团队的通知",
-      "school": "浙江大学",
-      "department": "软件学院",
-      "department_id": "zju-software",
-      "source_id": "zju-software-search",
-      "category": "通知",
-      "topics": [],
-      "published_at": "2026-05-21",
-      "date_inferred": false,
-      "excerpt": "仅提供官方标题与原文入口；请打开学校官网核对要求。",
-      "content": "",
-      "attachments": [],
-      "date_candidates": [],
-      "personal_list": false
-    },
-    {
       "id": "47dd00a65bd4e46b",
       "url": "http://www.cs.zju.edu.cn/csen/2026/0513/c27006a3162028/page.htm",
       "title": "计算机科学与技术学院 2026年面向港澳台地区研究生招生复试录取方案",
@@ -2323,6 +2305,24 @@
       "attachments": [],
       "date_candidates": [],
       "personal_list": false
+    },
+    {
+      "id": "dfac4d3821a59974",
+      "url": "http://www.cst.zju.edu.cn/2026/0413/c32178a3150773/page.htm",
+      "title": "关于浙江大学软件学院 2026年拟录取研究生政审、调档和党团组织关系转接等工作的通知",
+      "school": "浙江大学",
+      "department": "软件学院",
+      "department_id": "zju-software",
+      "source_id": "zju-software-search",
+      "category": "通知",
+      "topics": [],
+      "published_at": "2026-04-13",
+      "date_inferred": false,
+      "excerpt": "仅提供官方标题与原文入口；请打开学校官网核对要求。",
+      "content": "",
+      "attachments": [],
+      "date_candidates": [],
+      "personal_list": true
     },
     {
       "id": "c5fc061e447d00c5",
@@ -2683,7 +2683,7 @@
   ],
   "health": {
     "status": "healthy",
-    "assessed_at": "2026-11-27T04:17:44Z",
+    "assessed_at": "2026-11-27T16:43:13Z",
     "issues": []
   }
 }
