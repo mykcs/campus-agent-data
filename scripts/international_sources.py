@@ -7,6 +7,11 @@ from urllib.request import Request, build_opener, HTTPRedirectHandler
 
 from bs4 import BeautifulSoup
 
+if __package__:
+    from .topic_contract import topics, category
+else:
+    from topic_contract import topics, category
+
 GLOBAL_SOURCES = [
     dict(id="mit-hst-bulletin", school="MIT", department="Harvard-MIT Health Sciences and Technology",
          department_id="mit-hst", name="MIT HST · TWiHST 公共通讯",
@@ -116,12 +121,14 @@ def parse_public_list(html, spec):
                     inferred = True
                 except (ValueError, AttributeError):
                     continue
+        forced = ("scholarships",) if spec["kind"]=="oge" else ("admissions",) if spec["kind"]=="sigs" else ()
+        tags = topics(title, forced)
         records[url] = {
             "id": hashlib.sha256(url.encode()).hexdigest()[:16],
             "url":url, "title":title[:190], "school":spec["school"],
             "department":spec["department"], "department_id":spec["department_id"],
-            "source_id":spec["id"], "category":"奖助" if spec["kind"]=="oge" else "招生" if spec["kind"]=="sigs" else "通知",
-            "topics":["scholarships"] if spec["kind"]=="oge" else ["admissions"] if spec["kind"]=="sigs" else [],
+            "source_id":spec["id"], "category":"奖助" if spec["kind"]=="oge" else "招生" if spec["kind"]=="sigs" else category(title),
+            "topics":tags,
             "published_at":published, "date_inferred":inferred, "timezone":spec["timezone"],
             "excerpt":"仅提供学校公开原文入口；申请日期与适用条件须核对原文。",
             "content":"", "attachments":[], "date_candidates":[], "date_events":[],

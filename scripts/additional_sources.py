@@ -15,16 +15,15 @@ from bs4 import BeautifulSoup
 
 if __package__:
     from .international_sources import GLOBAL_SOURCES, allowed_article, fetch_public_list, parse_public_list
+    from .topic_contract import topics, category, SCHOLARSHIP
 else:
     from international_sources import GLOBAL_SOURCES, allowed_article, fetch_public_list, parse_public_list
+    from topic_contract import topics, category, SCHOLARSHIP
 
 ARTICLE = re.compile(r"/20\d{2}/\d{4}/c\d+a\d+/(?:page|pagem)\.htm$", re.I)
 DATE = re.compile(r"20\d{2}[-./]\d{1,2}[-./]\d{1,2}")
 PUBLISHED = re.compile(r"发布时间[:：]?\s*(20\d{2}[-./]\d{1,2}[-./]\d{1,2})")
 PRIVATE_LIST = re.compile(r"名单|公示|拟录取|入围|评选结果|导师资格目录")
-SCHOLARSHIP = re.compile(r"奖学金|助学金|奖助|资助|评奖|助学|经济困难|励志奖|外设奖")
-ADMISSIONS = re.compile(r"博士|硕士|招生|推免|申请考核|夏令营")
-TEACHING = re.compile(r"课程|调课|教学|培养|考试安排")
 HEADERS = {"User-Agent": "CampusAgentPublicNotices/0.2 (+https://github.com/mykcs/campus-agent-data)",
            "Accept": "text/html,application/xhtml+xml"}
 QUERIES = [
@@ -144,20 +143,6 @@ def get_row_date(a, url: str) -> tuple[str|None,bool]:
                 return m.group().replace(".","-").replace("/","-"),False
     return date_from_url(url),True
 
-def topics(title: str) -> list[str]:
-    ids=[]
-    if SCHOLARSHIP.search(title):ids.append("scholarships")
-    if ADMISSIONS.search(title):ids.append("admissions")
-    if TEACHING.search(title):ids.append("teaching")
-    return ids
-
-def category(title: str) -> str:
-    if SCHOLARSHIP.search(title):return "奖助"
-    if "博士" in title:return "博士招生"
-    if ADMISSIONS.search(title):return "招生"
-    if TEACHING.search(title):return "教学"
-    return "通知"
-
 def parse_source(html: str, config: dict) -> list[dict]:
     if config in GLOBAL_SOURCES:
         return parse_public_list(html, config)
@@ -198,7 +183,7 @@ def parse_source(html: str, config: dict) -> list[dict]:
             "department_id":config["department_id"],
             "source_id":config["id"],
             "category":category(title),
-            "topics":sorted(set(topics(title) + (["scholarships"] if config.get("force_scholarship_topic") else []))),
+            "topics":topics(title, ("scholarships",) if config.get("force_scholarship_topic") else ()),
             "published_at":date,
             "date_inferred":estimated,
             "excerpt":"仅提供官方标题与原文入口；请打开学校官网核对要求。",
