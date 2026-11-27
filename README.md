@@ -88,3 +88,16 @@ International sources use fixed HTTPS hosts and explicit link patterns; login/ex
 ## Tsinghua public source
 
 [Shenzhen International Graduate School admissions notices](https://www.sigs.tsinghua.edu.cn/_s3/7770/list.psp): recent official public notice titles, URLs and row dates. Partial coverage; no school authentication or applicant details. URL-derived dates are explicitly marked inferred. The central admissions site and other departments are not included in this source.
+
+## Independent probe candidate (Issue #8)
+
+`python3 scripts/independent_probe.py --state /tmp/campus-health-state.json`
+performs one public, credential-free read from any approved host. It resolves
+the GitHub main commit once and reads both catalog and health receipts at
+that immutable revision, rejects mixed/unhealthy/stale results, and emits
+one incident/recovery transition with a local state file. It does not send
+messages, install a scheduler, modify GitHub or guarantee uptime. The state
+must be outside Git, one writer; a separate authorized scheduler and delivery
+receipt are required for A04. An inaccessible public endpoint is a failed
+observation, not a successful refresh. The transition is observed, not proof
+of user notification; no state change is proof of delivery.
