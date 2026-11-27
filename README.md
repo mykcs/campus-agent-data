@@ -88,3 +88,19 @@ International sources use fixed HTTPS hosts and explicit link patterns; login/ex
 ## Tsinghua public source
 
 [Shenzhen International Graduate School admissions notices](https://www.sigs.tsinghua.edu.cn/_s3/7770/list.psp): recent official public notice titles, URLs and row dates. Partial coverage; no school authentication or applicant details. URL-derived dates are explicitly marked inferred. The central admissions site and other departments are not included in this source.
+
+## Campus services candidate (Issue #9)
+
+Separate metadata contract: `python scripts/service_sources.py --output
+/tmp/campus-services.json` (requires beautifulsoup4). It checks two official
+ZJU Engineering College lists (shuttle announcements and public procedures),
+MIT shuttle and Registrar forms reference pages and Tsinghua public campus
+traffic reference. No attachments, timetable images, private forms or login
+pages are copied. Exact school host/path checks, title/URL, source-local
+publication date precision, checked/success UTC instants and explicitly stated
+effective dates only. No end date means verify the official schedule, not
+active; reference pages do not assert eligibility or specific departure.
+No new scheduler or production file enabled by this candidate. Two actual
+reads and fixtures qualify the public source contract; website consumption,
+live publication and detailed timetable/holiday interpretation remain
+separate A16/A17 gates.
