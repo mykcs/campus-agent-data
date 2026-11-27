@@ -147,7 +147,8 @@ def classify(title: str) -> str:
     ]:
         if word in title:
             return tag
-    return "招生通知"
+    labels=topics(title)
+    return "活动" if "activities" in labels else "教学" if "teaching" in labels else "招生通知"
 
 def collect(previous: dict | None = None, delay: float = 0.6) -> dict:
     entries = []

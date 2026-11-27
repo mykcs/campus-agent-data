@@ -88,3 +88,16 @@ International sources use fixed HTTPS hosts and explicit link patterns; login/ex
 ## Tsinghua public source
 
 [Shenzhen International Graduate School admissions notices](https://www.sigs.tsinghua.edu.cn/_s3/7770/list.psp): recent official public notice titles, URLs and row dates. Partial coverage; no school authentication or applicant details. URL-derived dates are explicitly marked inferred. The central admissions site and other departments are not included in this source.
+
+## Topic contract (Issue #11)
+
+`scripts/topic_contract.py` owns the stable title-based multi-label IDs
+`scholarships`, `admissions`, `teaching`, `activities`. The first three
+remain compatible with existing follow settings; an unknown title can retain
+an empty array. Explicit official funding/admissions source scope may add a
+label. A newsletter issue is not automatically an individual event, and an
+undated funding reference is not an open opportunity. Activity is a discovery
+hint only; official source, event time and eligibility still require review.
+No new article-body scraping or school-wide activity coverage is implied.
+Site consumption uses the same IDs; a new topic does not silently change
+the user's previous selections. Personal-list records remain metadata only.
